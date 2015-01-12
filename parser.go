@@ -45,7 +45,14 @@ func writeToFile(date string, line string, rootName string) {
 
 func main() {
 
-	filename := "prod.log"
+	if len(os.Args) < 2 {
+		fmt.Println("usage: symfonylgo <filename>")
+		return
+	}
+
+	args := os.Args[1:]
+	filename := args[0]
+
 	parts := strings.Split(filename, ".")
 
 	var rootName string

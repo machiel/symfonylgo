@@ -43,15 +43,69 @@ func writeToFile(date string, line string, rootName string) {
 	}
 }
 
+func retrieveLines(filename string) []string {
+
+	dat, err := ioutil.ReadFile(filename)
+
+	if err != nil {
+		panic(err)
+	}
+
+	lines := strings.Split(string(dat), "\n")
+
+	return lines
+}
+
+func printCriticalLines(lines []string) {
+
+	r, rerr := regexp.Compile("\\.CRITICAL")
+	e, eerr := regexp.Compile("\\.ERROR")
+
+	if rerr != nil || eerr != nil {
+		panic(rerr)
+	}
+
+	var critCount int
+	var errCount int
+
+	for _, line := range lines {
+		if r.MatchString(line) {
+			fmt.Println(line)
+			critCount++
+		}
+
+		if e.MatchString(line) {
+			fmt.Println(line)
+			errCount++
+		}
+	}
+	fmt.Printf("Error count: %d\n", errCount)
+	fmt.Printf("Critical count: %d\n", critCount)
+	fmt.Printf("Total lines: %d\n", len(lines))
+}
+
 func main() {
 
-	if len(os.Args) < 2 {
-		fmt.Println("usage: symfonylgo <filename>")
+	if len(os.Args) < 3 {
+		fmt.Println("usage: symfonylgo <command> <filename>")
 		return
 	}
 
 	args := os.Args[1:]
-	filename := args[0]
+	command := args[0]
+	filename := args[1]
+
+	fmt.Printf("Loading %s\n", filename)
+
+	lines := retrieveLines(filename)
+
+	fmt.Println(len(lines))
+
+	if command == "critical" {
+		printCriticalLines(lines)
+		fmt.Println("Showing critical stuff")
+		return
+	}
 
 	parts := strings.Split(filename, ".")
 
@@ -62,17 +116,6 @@ func main() {
 	} else {
 		rootName = filename
 	}
-
-	fmt.Printf("Loading %s\n", filename)
-
-	dat, err := ioutil.ReadFile(filename)
-
-	if err != nil {
-		panic(err)
-	}
-
-	lines := strings.Split(string(dat), "\n")
-	fmt.Println(len(lines))
 
 	r, rerr := regexp.Compile("(([12][0-9]{3})-([01][0-9])-([0123][0-9]))")
 

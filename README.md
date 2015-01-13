@@ -14,7 +14,7 @@ For example, running `symfonylgo prod.log` will produce:
 
 -------------------
 
-Even though you can use `logrotate` to achieve this, or something similar to it, I wanted a quick tool that would easily split my logfiles into files based on their dates.
+Even though you can use `logrotate` to achieve this, or simply use default linux tools like `awk` and `sed`, I wanted a quick tool that would easily split my logfiles into files based on their dates. Besides it gave me a chance to play around with Go for a bit :).
 
 This is a very raw first version, without any tests. Please create a PR if you'd like to add anything.
 
